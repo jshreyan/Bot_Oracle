@@ -4,11 +4,10 @@ import time
 os.environ.update([('NLS_LANG', '.UTF8'),('ORA_NCHAR_LITERAL_REPLACE', 'TRUE'),])
 timenow = time.strftime('%Y-%m-%d_%H%M%S')
 
-#CONNECTSTRING = 'system/Md!!@LOCALHOST:1521/xe'
-CONNECTSTRING = 'apps/apps@DISHA_CRMUAT'
+CONNECTSTRING = 'hr/hr@LOCALHOST:1521/xe'
 
-dirIN = 'C:\\Users\\IBM_ADMIN\\Desktop\\AD Final\\CRM\\IN'
-dirOUT = 'C:\\Users\\IBM_ADMIN\\Desktop\\AD Final\\CRM\\OUT'
+dirIN = 'C:\\Users\\ADMIN\\Desktop\\FILES\\IN'
+dirOUT = 'C:\\Users\\ADMIN\\Desktop\\FILES\\OUT'
 
 def connect_oracle(CONNECTSTRING):
     print('Connecting to Oracle=> '+CONNECTSTRING)
@@ -19,7 +18,7 @@ def connect_oracle(CONNECTSTRING):
     
 def run_replace_plsql(module,cursor,p_in_txt):
     p_out_txt_or = cursor.var(str)
-    cursor.callproc('replace_email_ids',[p_in_txt,module, p_out_txt_or])
+    cursor.callproc('replace_text_proc',[p_in_txt,module, p_out_txt_or])
     #print('Procedure Called.')
     return p_out_txt_or.getvalue()
 
@@ -36,7 +35,7 @@ def process_files():
         print("\n  <=========================="+folder+"==========================>\n")
         folderdir = dirIN+"\\"+folder
         files = os.listdir(folderdir)
-        new_folder_dir = dirOUT+"\\CRM_"+timenow+"\\"+folder
+        new_folder_dir = dirOUT+"\\MYFILES_"+timenow+"\\"+folder
         os.makedirs(new_folder_dir)
         for file in files:
             var_txt,var_file,p_out_txt = "","",""

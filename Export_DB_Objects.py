@@ -6,13 +6,10 @@ timenow = time.strftime('%Y-%m-%d_%H%M%S')
 start = time.time()
 print('Start:',timenow)
 
-INSTANCE = 'MPESA'
-#CONNECTSTRING = 'system/Md!!@LOCALHOST:1521/xe'
-#CONNECTSTRING = 'apps/apps@DISHA_CRMUAT'
-#CONNECTSTRING = 'apps/EMZCI9#B@10.94.142.76:1526/CRMdISHA'
-CONNECTSTRING = 'apps/eymdt2#f@10.94.49.11:1526/CRMVMT'
+INSTANCE = 'HR'
+CONNECTSTRING = 'hr/hr@LOCALHOST:1521/xe'
 
-dirOUT = 'C:\\Users\\IBM_ADMIN\\Desktop\\CRM\\'+INSTANCE
+dirOUT = 'C:\\Users\\ADMIN\\Desktop\\FILES\\'+INSTANCE
 
 querystring = """SELECT object_name, object_type,  DBMS_METADATA.get_ddl (
        CASE  WHEN object_type = 'PACKAGE' THEN 'PACKAGE_SPEC'
@@ -22,10 +19,9 @@ querystring = """SELECT object_name, object_type,  DBMS_METADATA.get_ddl (
              ELSE object_type END, object_name,owner)  AS source
   FROM all_objects u
  WHERE     TRUNC (last_ddl_time) >= TO_DATE ('01-JAN-2012', 'DD-MON-YYYY')
-       AND owner IN ('APPS', 'HUTCHCS')
+       AND owner IN ('APPS')
        AND object_type IN ('PACKAGE','PACKAGE BODY','PROCEDURE','VIEW', 'TABLE','FUNCTION','SYNONYM','MATERIALIZED VIEW','JOB','SEQUENCE','TRIGGER','TYPE')
-       AND (object_name LIKE 'XX%' OR object_name LIKE 'HUTCH%' OR object_name LIKE 'VEL%' OR object_name LIKE 'VF%')
-       AND object_name NOT IN ('HUTCH_PURGE_COL_INFO')"""
+       AND object_name LIKE 'XX%'"""
 
 
 def connect_oracle(CONNECTSTRING):
@@ -45,7 +41,7 @@ def export_objects(cursor,querystring):
         save_object(objname,objtype,sourcecode.read())
 
 def save_object(objname,objtype,sourcecode):
-    new_folder_dir = dirOUT+"\\CRM_"+timenow+"\\"
+    new_folder_dir = dirOUT+"\\FILES_"+timenow+"\\"
     try:
         os.makedirs(new_folder_dir)
     except:
@@ -68,12 +64,12 @@ def find_extention(objtype):
        ext = '.fnc'
     elif objtype == 'TRIGGER':
        ext = '.trg'
-#    elif objtype == 'TABLE':
-#       ext = '.tbl'
-#    elif objtype == 'TYPE':
-#       ext = '.typ'
-#    elif objtype == 'INDEX':
-#       ext = '.idx'
+    elif objtype == 'TABLE':
+       ext = '.tbl'
+    elif objtype == 'TYPE':
+       ext = '.typ'
+    elif objtype == 'INDEX':
+       ext = '.idx'
     else:
        ext = '.sql'
     #print('ext:',ext)
